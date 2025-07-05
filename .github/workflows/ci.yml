@@ -1,0 +1,39 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.DS_TOKEN }}
+          
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install dependencies
+        run: npm install
+          
+      - name: Build project
+        run: npm run build
+          
+      - name: Commit changes
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Autobuild: ${{ github.run_number }}" || echo "No changes to commit"
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@v0
+        with:
+          github_token: ${{ secrets.DS_TOKEN }}
+          branch: main
+          force: true
