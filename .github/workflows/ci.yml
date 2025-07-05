@@ -1,8 +1,5 @@
 name: CI/CD Pipeline
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -31,7 +28,10 @@ jobs:
           git add .
           git commit -m "Autobuild: ${{ github.run_number }}" || echo "No changes to commit"
           
+      - name: Add safe directory
+        run: git config --global --add safe.directory /github/workspace
+          
       - name: Push changes
         run: |
           git remote set-url origin https://${{ secrets.DS_TOKEN }}@github.com/Adam-DS23/reader2-edu.git
-          git push origin main --force
+          git push origin HEAD:main --force
