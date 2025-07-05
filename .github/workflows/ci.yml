@@ -32,8 +32,6 @@ jobs:
           git commit -m "Autobuild: ${{ github.run_number }}" || echo "No changes to commit"
           
       - name: Push changes
-        uses: ad-m/github-push-action@v0
-        with:
-          github_token: ${{ secrets.DS_TOKEN }}
-          branch: main
-          force: true
+        run: |
+          git remote set-url origin https://${{ secrets.DS_TOKEN }}@github.com/Adam-DS23/reader2-edu.git
+          git push origin main --force
